@@ -17,6 +17,12 @@ class Pixel:
         self.hasBeenDrawn = False
 
 def preBlur(radius):
+    '''Applies a blur to Image object using convolution kernal
+        Args:
+            radius(int): radius of kernel used to blur
+        Returns:
+            none (image is modified in place)
+    '''
     tempData = im.load()
     for y in range(0, ySize):
         for x in range(0, xSize):
@@ -49,24 +55,28 @@ def preBlur(radius):
 
 
 def sobel(pixelArray, outputImage, im, edgeThreshold):
-    '''Finds edges in image based using Sobel convolution
+    '''Finds edges in image using Sobel convolution
         
         Args:
             pixelArray (ndarray):   2D array of Pixel objects to be defined by
             the Sobel function.
             outputImage (Image):    Image used to visually display output of the 
             Sobel function.
+            im (Image):             Image data of image to be analyzed.
+            edgeThreshold (int):    Edges of intensity less than this magnitude will be ignored.
     '''
 
     tempData = im.load()
-    xSize = im.size[0]
+    xSize = im.size[0]      #Image dimensions
     ySize = im.size[1]
     draw = ImageDraw.Draw(outputImage, 'L')
-    sobX = [[-1, -2, -1],
+    
+    #Sobel kernels
+    sobX = [[-1, -2, -1],   # X Kernel
             [ 0,  0,  0],
     		[ 1,  2,  1]]
 
-    sobY = [[-1,  0,  1],
+    sobY = [[-1,  0,  1],   # Y Kernel
     		[-2,  0,  2],
     		[-1,  0,  1]]
 
@@ -110,8 +120,10 @@ def sobel(pixelArray, outputImage, im, edgeThreshold):
                         yGrad += tempData[pixX, pixY] * sobY[kernX][kernY]
                    
             rawGradient = (xGrad**2 + yGrad**2)**0.5 * 0.25  #Scale back down to 0 <= x <= 255
+            #Draw pixel to outputImage if gradient is sharp enough
             if(rawGradient >= edgeThreshold):
                 draw.point([x, y], round(rawGradient))
+            #Update pixelArray with output of Sobel analysis
             if(xGrad == 0):
                 pixelArray[x,y] = Pixel(rawGradient, None)
             else:
@@ -124,6 +136,8 @@ def traceEdges(pixelArray, drawThreshold, xSize, ySize):
         Args:
             pixelArray (ndarray):   2D array of Pixel objects.
             drawThreshold (int):    Edges with intensity less than this threshold will be ignored.
+            xSize (int):            X dimension of image in pixels
+            ySize (int):            Y dimension of image in pixels
 
         Returns:
             drawPath (List of (x,y,pen)):   List of coordinates and pen instructions to draw image.            
@@ -195,6 +209,25 @@ def traceEdges(pixelArray, drawThreshold, xSize, ySize):
     return finalDrawPath
 
 def probeScan(isClockwise, pixelArray, startX, startY, prevProbeCoords, stepSize, probeOverlapDist, drawThreshold, xSize, ySize):
+    '''Generates a single drawpath by following a local max in the edge gradient data of pixelArray
+        
+        Args:
+	    isClockwise (bool):		Direction along gradient angle to look for next drawpath point.
+            pixelArray (ndarray):       2D array of Pixel objects.
+	    startX (int):		X pixel coordinate of starting pixel.
+	    startY (int):		Y pixel coordinate of starting pixel.
+	    prevProbeCoords (list[int,int]):
+		    			List of coordinates of previously drawn pixels.
+	    stepSize (double):	        How far to follow gradient angle to check for next point in drawpath.
+	    probeOverlapDist (double:)
+				        Collision size of probe when comparing to previous probe positions.
+            drawThreshold (int):        Edges with intensity less than this threshold will be ignored.
+            xSize (int):                X dimension of image in pixels
+            ySize (int):                Y dimension of image in pixels
+        Returns:
+            drawPath (List of (x,y,pen)):   List of coordinates and pen instructions to draw image.            
+    '''
+    
     probe = [startX,startY]
     drawPath = [(startX,startY,1)]      #PRE LOOP
     currPx = [startX,startY]            #Current pixel that is guiding drawpath
@@ -269,6 +302,14 @@ def turtleDraw(drawPath):
 
 
 def findDrawPath(imageString, edgeThreshold):
+    '''Generates a single drawpath by following a local max in the edge gradient data of pixelArray
+        
+        Args:
+	    imageString (string):    Filename of image to be drawn
+	    edgeThreshold (int):     Edges with intensity less than this threshold will be ignored
+        Returns:
+            finalPath (List of (x,y,pen)):   List of coordinates and pen instructions to draw image.            
+    '''
     im = Image.open(imageString)
     im = im.convert('L') #Greyscale conversion
     imData = im.load()
@@ -286,7 +327,7 @@ def findDrawPath(imageString, edgeThreshold):
     #im.show()
     sobel(pArray, sobelOutput, im, edgeThreshold)
     
-    sobelOutput.show()      #****COMMENT/UNCOMMENT TO TOGGLE SOBEL OUTPUT****
+    #sobelOutput.show()      #****COMMENT/UNCOMMENT TO TOGGLE SOBEL OUTPUT****
     print("Computing drawpath")
     path = traceEdges(pArray, edgeThreshold, xSize, ySize)
     

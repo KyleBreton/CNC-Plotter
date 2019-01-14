@@ -1,3 +1,12 @@
+'''
+This code is poorly documented but to outline the premise:
+The input image is used to generate "Regions" of adjacent pixels that all
+    fall within one of any number of pre-defined lightness ranges.
+The program determines what density of crosshatch spacing is needed to replicate
+    the same degree of "lightness" and computes a drawpath to crosshatch the region.
+All drawpaths are combined into one master drawpath which is returned to the
+    calling module.
+'''
 import turtle
 import math
 import PIL
@@ -127,6 +136,7 @@ def outputColor(pixel, thresholdList, valueList):
 
 
 def computeLineSpacing(lightnessVal, lineThickness, mode, xSize, ySize):
+    ## Outputs a crosshatch spacing to replicate a particular lightness value
     if(lightnessVal == 255):
         return xSize + ySize
     percentBlk = (255-lightnessVal)/255

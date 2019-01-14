@@ -1,6 +1,6 @@
 import math
 import turtle
-import Driver
+#import Driver
 import Crosshatcher
 import EdgeTracer
 
@@ -22,6 +22,7 @@ def draw(drawPath, mode, lineWidth):
     
     if(mode == 0):
         print("Drawing image using Turtle")
+        #Initialize turtle t
         t = turtle
         t.width(lineWidth)
         t.speed(0)
@@ -29,10 +30,13 @@ def draw(drawPath, mode, lineWidth):
         t.delay(0)
         t.tracer(10, 0)
         t.penup()
+        
         pathLengthT = 0
         drawLengthT = 0
         penUpLengthT = 0
         isPenUp = True
+
+        # Main Draw Loop
         for p in drawPath:
             drawLength = drawLength + ((p[0]-t.xcor())**2 + (-p[1]-t.ycor())**2)**0.5
             if(isPenUp):
@@ -50,6 +54,8 @@ def draw(drawPath, mode, lineWidth):
         
     else:
         print("Drawing image using CNC")
+        #Initalize CNC driver d
+        import Driver
         d = Driver
         d.enableOn()
         d.penUp()
@@ -58,7 +64,7 @@ def draw(drawPath, mode, lineWidth):
         drawLength = pathLength
         isPenDown = True
 
-        #Main image
+        #Main Draw Loop
         for p in drawPath:
             moveDist = ((p[0] - lastX)**2 + (p[1] - lastY)**2)**0.5 / d.STEPS_PER_MM
             if(p[2] == 0 and isPenDown):
@@ -84,10 +90,13 @@ def draw(drawPath, mode, lineWidth):
     print("PenUp distance:", penUpLength)
 
 
-imageString = "elephant.jpg"
-lineWidth = 1
-computeMode = 1   #0=Crosshatch, 1=EdgeTrace
-outputMode = 1    #0=Turtle, 1=CNC
+##### MAIN #####
+imageString = "bob.jpg"    #Image filename to draw
+lineWidth = 1                   #Width of pen line
+computeMode = 1                 #0=Crosshatch, 1=EdgeTrace
+outputMode = 1                  #0=Turtle, 1=CNC
+
+#Calculate Drawpath
 if(computeMode == 0):
     path = Crosshatcher.findDrawPath(imageString, 2, 10)
 elif(computeMode == 1):
@@ -95,6 +104,7 @@ elif(computeMode == 1):
 else:
     print("Invalid compute mode!")
 
+#Draw 
 draw(path, outputMode, lineWidth)
 
 
