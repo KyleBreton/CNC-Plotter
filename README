@@ -1,0 +1,22 @@
+CNC Plotter code
+All drawing functions are also able to be run via turtle, so this can be tested on any machine
+
+Draw.py is main module.  It must be run with Driver.py, EdgeTracer.py, Crosshatcher.py, and 
+  image file to be drawn in same directory (technically Driver.py can be left out, as long as
+  you are only ever using turtle to output drawing.)  
+To run with turtle, set outputMode = 0 (in Draw.py)
+Set imageString = filename of image to be drawn.  Compatible extensions are JPG, PNG, BMP (I'm
+  actually not sure what else, so far I haven't run into compatibility issues)
+Set computeMode = 0 for Crosshatching or = 1 for Edgetracing
+
+Module dependencies:
+  Python libraries:
+    turtle
+    math
+    collections
+    time
+
+  Go get these yourself:
+    PIL
+    numpy
+    matplotlib (only if drawing with CNC)
