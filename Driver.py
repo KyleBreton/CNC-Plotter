@@ -1,10 +1,10 @@
 import pigpio as pig
-import pynput
-from pynput.keyboard import Key, Listener
+#import pynput
+#from pynput.keyboard import Key, Listener
 import matplotlib.pyplot as plt
 import time
 import math
-import pdb
+#import pdb
 
 pi = pig.pi()
 
@@ -32,7 +32,9 @@ accelDist = 500
 spsCurr = 0
 spsCurrX = 0
 spsCurrY = 0
-
+#Uncomment this block to use key commands (debugging mostly)
+#Required uncommenting import statements at top as well
+''' 
 def on_press(key):
     if(key.char == 'c'):
         print(currStepX)
@@ -51,7 +53,7 @@ def on_release(key):
 
 lis = Listener(on_press=on_press, on_release=on_release)
 lis.start()
-
+'''
 def getPos():
     return (currStepX, currStepY)
 

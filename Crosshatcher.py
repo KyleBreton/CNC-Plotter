@@ -12,7 +12,7 @@ import math
 import PIL
 from PIL import Image
 from collections import deque
-import pdb
+#import pdb
 import Driver
 
 class Region:
