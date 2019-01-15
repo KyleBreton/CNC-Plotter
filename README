@@ -9,6 +9,13 @@ Set imageString = filename of image to be drawn.  Compatible extensions are JPG,
   actually not sure what else, so far I haven't run into compatibility issues)
 Set computeMode = 0 for Crosshatching or = 1 for Edgetracing
 
+Test pictures:
+
+Test02:   Very simple and well defined regions to test region-finding and edge detection
+bob:      Spongebob!  Simple colors (aka no photorealistic shading), good test for edge detection and demonstration
+Lizzie:   Lol of course Lizzie makes it in here.  Curly hair serves as a complicated pattern to replicate, but with decently good results.
+NewBill:  Relatively photorealistic shapes and shading, lots of variation makes for a good test.  
+
 Module dependencies:
   Python libraries:
     turtle
